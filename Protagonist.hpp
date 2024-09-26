@@ -127,7 +127,7 @@ public:
 	int getDay() const {return day;}
 	void setDay(int newDay){ 
 		day = newDay;
-		setDistanceFromStorm(getDistanceFromStorm() - 50);
+		setDistanceFromStorm(getDistanceFromStorm() - 20);
 	}
 	int getDistanceToEnd() const { return distanceToEnd; }
 	void setDistanceToEnd(int newDistance){ distanceToEnd = newDistance;} 
