@@ -8,39 +8,45 @@
 void FaseLevel1::init()
 {	
 	//Objetos de jogo
-	protagonist= new Protagonist(ObjetoDeJogo("Protagonist",SpriteAnimado("rsc/idle2.anm",1),18,38));
-	objs.push_back(protagonist);
+	protagonist= new Protagonist(ObjetoDeJogo("Protagonist",SpriteAnimado("rsc/idle2.anm",1),32,38));
+	objs.push_front(protagonist);
+
+	//train = new ObjetoDeJogo("train",Sprite("rsc/train3.txt"),18,38);
+	//objs.push_back(train);
 
 	frame = new ObjetoDeJogo("Frame",Sprite("rsc/frame.img"),25,120);
-	objs.push_back(frame);
+	objs.push_front(frame);
 	
-	//portao = new ObjetoDeJogo("frontDoor",Sprite("rsc/frontDoor.img"),49,102);
-	//objs.push_back(portao);
 													 //std::string(20,'#')
-	objs.push_back(new ObjetoDeJogo("Life",TextSprite("####################"),20,20));
+	objs.push_back(new ObjetoDeJogo("Life",TextSprite("B R O K E N"),20,20));
 	SpriteBase *tmp = const_cast<SpriteBase*> (objs.back()->getSprite());
 	life = dynamic_cast<TextSprite*> (tmp);
 
-	objs.push_back(new ObjetoDeJogo("Indicator",TextSprite("####################"),20,110));
+	
+
+	objs.push_back(new ObjetoDeJogo("Indicator",TextSprite("B R O K E N"),20,105));
 	tmp = const_cast<SpriteBase*> (objs.back()->getSprite());
 	levelIndicators = dynamic_cast<TextSprite*> (tmp);
 
-	objs.push_back(new ObjetoDeJogo("HouseIndicator",TextSprite("####################"),30,130));
+	objs.push_back(new ObjetoDeJogo("HouseIndicator",TextSprite("B R O K E N"),30,130));
 	tmp = const_cast<SpriteBase*> (objs.back()->getSprite());
 	structureIndicatorHouse = dynamic_cast<TextSprite*> (tmp);
 
-	objs.push_back(new ObjetoDeJogo("MarketIndicator",TextSprite("####################"),33,142));
+	objs.push_back(new ObjetoDeJogo("MarketIndicator",TextSprite("B R O K E N"),33,142));
 	tmp = const_cast<SpriteBase*> (objs.back()->getSprite());
 	structureIndicatorMarket = dynamic_cast<TextSprite*> (tmp);
 
-	objs.push_back(new ObjetoDeJogo("FuelIndicator",TextSprite("####################"),28,135));
+	objs.push_back(new ObjetoDeJogo("FuelIndicator",TextSprite("B R O K E N"),28,135));
 	tmp = const_cast<SpriteBase*> (objs.back()->getSprite());
 	structureIndicatorFuel = dynamic_cast<TextSprite*> (tmp);
 
-	objs.push_back(new ObjetoDeJogo("FuelIndicator",TextSprite("####################"),40,164));
+	objs.push_back(new ObjetoDeJogo("FuelIndicator",TextSprite("B R O K E N"),40,164));
 	tmp = const_cast<SpriteBase*> (objs.back()->getSprite());
 	structureIndicatorBase = dynamic_cast<TextSprite*> (tmp);
 
+	objs.push_back(new ObjetoDeJogo("InventoryIndicator",TextSprite("B R O K E N"),18,110));
+	tmp = const_cast<SpriteBase*> (objs.back()->getSprite());
+	InventoryIndicator = dynamic_cast<TextSprite*> (tmp);
 
 
 	//blocos
@@ -67,7 +73,7 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
 	KeyBoard::setNonBlocking(true);
 
 	int gameState = 0; //0 = esperando jogador //1 = processando entrada
-	int action = 0; //0 not assigned//1 move
+	int action = 0; //0 not assigned//1 move//2 menu de loot//3 loot house//4 loot market//5 loot fuel//6 loot base// 7 loot pharmacy
 
 	while (running)
 	{
@@ -83,20 +89,33 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
 					running = false; // Sai do loop se 'q' for pressionado
 					break;
 				case '1':
-					if (protagonist->getCanMove()){
+					if (protagonist->getCanMove() == true){
 						std::cout << "Movendo para cima" << std::endl;
 						gameState = 1;
+						action = 1;
 						break;
 					}
-				case 's':
-					std::cout << "Movendo para baixo" << std::endl;
-					break;
-				case 'a':
+				case 'c':
+					if (protagonist->getHasHouses() == true){
 					std::cout << "Movendo para a esquerda" << std::endl;
+					gameState = 1;
+					action = 3;
 					break;
-				case 'd':
-					std::cout << "Movendo para a direita" << std::endl;
+					}
+				case 'm':
+					if (protagonist->getHasMarket() == true){
+					std::cout << "Movendo para a esquerda" << std::endl;
+					gameState = 1;
+					action = 4;
 					break;
+					}
+				case 'e':
+					if (protagonist->getHasDeposit() == true){
+					std::cout << "Movendo para a esquerda" << std::endl;
+					gameState = 1;
+					action = 5;
+					break;
+					}
 				default:
 					std::cout << "Tecla pressionada: " << input << std::endl;
 					break;
@@ -116,8 +135,8 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
 
 		oss << "  Distancia ate a próxima estação: " << protagonist->getDistanceToNextStation() 
 		<< "  Distancia ate a fronteira: " << protagonist->getDistanceToEnd()
-		<< "  Distancia da tempestade: " << protagonist->getDistanceFromStorm();
-
+		<< "  Distancia da tempestade: " << protagonist->getDistanceFromStorm()
+		<< " Dia: " << protagonist->getDay();
 
 		levelIndicators->setText(oss.str());
 		oss.str(" ");
@@ -159,6 +178,21 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
 			structureIndicatorBase->setText(oss.str());
 		}
 
+		for(int i = 0; i <= 9; i++){
+			oss << "| ";
+			if (protagonist->Inventory[i] == 1) {
+				oss << "Comida|";
+			}
+			if (protagonist->Inventory[i] == 2) {
+				oss << "Combustivel|";
+			}
+			if (protagonist->Inventory[i] == 3) {
+				oss << "Remédio|";
+			}
+			oss << " |";
+		}
+		InventoryIndicator->setText(oss.str());
+		oss.str(" ");
 
 		//processando entradas
 
@@ -166,9 +200,32 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
 			switch (action){
 			case 0:
 				gameState = 0;
+				//nunca coloque action = 0 aqui, tem os menus
+				break;
 			case 1:
 				protagonist->nextTile();
 				gameState = 0;
+				action = 0;
+				break;
+			case 2:
+				gameState = 0;
+				action = 0; // redundancia, so por acaso...
+				break;
+			case 3: // house
+				protagonist->loot(1);
+				gameState = 0;
+				action = 0;
+				break;
+			case 4: // market
+				protagonist->loot(2);
+				gameState = 0;
+				action = 0;
+				break;
+			case 5: // fuel
+				protagonist->loot(3);
+				gameState = 0;
+				action = 0;
+				break;
 			}
 		}
 		/*int posL = hero->getPosL(), posC = hero->getPosC();

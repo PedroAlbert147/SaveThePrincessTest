@@ -35,6 +35,7 @@ private:
 	ObjetoDeJogo *miniChave;
 	ObjetoDeJogo *princesa;
 	ObjetoDeJogo *frame;
+	ObjetoDeJogo *train;
 	
 	TextSprite *life;
 	TextSprite *levelIndicators;
@@ -43,7 +44,7 @@ private:
 	TextSprite *structureIndicatorMarket;
 	TextSprite *structureIndicatorPharmacy;
 	TextSprite *structureIndicatorBase;
-	TextSprite *Inventory;
+	TextSprite *InventoryIndicator;
 	
 	std::list<ObjetoDeJogo*> colisoes;
 };
