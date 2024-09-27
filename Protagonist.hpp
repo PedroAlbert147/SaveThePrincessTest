@@ -5,6 +5,7 @@
 #include <random>
 #include <cstdlib>  // For rand() and srand()
 #include <ctime>    // For time()
+#include "FaseLevel1.hpp"
 
 
 class Protagonist : public ObjetoDeJogo
@@ -37,7 +38,9 @@ public:
 		if(getHasBase() == true || getHasDeposit() == true || getHasHouses() == true || getHasMarket() == true || getHasPharmacy() == true){
 			canLoot = true;
 		}
-
+		if(getLife() <= 0){
+			//alguma coisa
+		}
 	}
 	void nextTile(){
 		setFuel(getFuel() - getDistanceToNextStation());
@@ -70,7 +73,12 @@ public:
 		
 		case 1:// house
 			if (dice >= 25){
-				addToInv(getRandomNumber(1,3));
+				dice = getRandomNumber(1,3);
+				if (dice == 3){
+					addToInv(3);
+				}else{
+					addToInv(1);
+				}
 			}
 			break;
 		case 2:// market
@@ -106,28 +114,49 @@ public:
 	//bool isAlive() const { return life != 0; }
 	int getLife() const { return life; }
 	void setLife(int newLife){ 
-		if (newLife < 0){
-			life = 0;
-		}
-		if (newLife > 100){
-			life = 100;
+		if (newLife <= 0){
+			newLife = 0;
+			if (hasInInv(3) == true ){
+				delFromInv(3);
+				newLife = 100;
+			}
+		}else{
+			if (newLife > 100){
+				newLife = 100;
+			}
 		}
 		life = newLife;}
 	int getRisk() const { return risk; }
 	int getHunger() const { return hunger; }
+	void setHunger(int newHunger){
+		if (newHunger <= 0){
+			newHunger = 0;
+			if (hasInInv(1) == true ){
+				delFromInv(1);
+				newHunger = 100;
+			}
+		}else{
+			if (newHunger > 100){
+				newHunger = 100;
+			}
+		}
+		hunger = newHunger;
+	}
 	int getFuel() const { return fuel; }
 	void setFuel(int newFuel){ 
 		if (newFuel < 0){
-			fuel = 0;
-		}
-		if (newFuel > 100){
-			fuel = 100;
+			newFuel = 0;
+		}else{ 
+			if (newFuel > 100){
+				newFuel = 100;
+			}
 		}
 		fuel = newFuel;}
 	int getDay() const {return day;}
 	void setDay(int newDay){ 
 		day = newDay;
-		setDistanceFromStorm(getDistanceFromStorm() - 20);
+		setHunger(getHunger() - 25);
+		setDistanceFromStorm(getDistanceFromStorm() - 50);
 	}
 	int getDistanceToEnd() const { return distanceToEnd; }
 	void setDistanceToEnd(int newDistance){ distanceToEnd = newDistance;} 

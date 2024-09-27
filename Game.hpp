@@ -29,9 +29,9 @@ public:
 		int ret1 = fase1.run(buffer);
 		if ( ret1 != Fase::GAME_OVER && ret1 != Fase::END_GAME){
 		
-			buffer.clear();
-			faseFinal.init();
-			faseFinal.run(buffer);
+			//buffer.clear();
+			//faseFinal.init();
+			//faseFinal.run(buffer);
 		}
 		else
 			std::cout << "GAME OVER" << std::endl;

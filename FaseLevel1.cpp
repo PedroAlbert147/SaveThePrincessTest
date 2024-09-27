@@ -44,6 +44,10 @@ void FaseLevel1::init()
 	tmp = const_cast<SpriteBase*> (objs.back()->getSprite());
 	structureIndicatorBase = dynamic_cast<TextSprite*> (tmp);
 
+	objs.push_back(new ObjetoDeJogo("PharmaIndicator",TextSprite("B R O K E N"),28,165));
+	tmp = const_cast<SpriteBase*> (objs.back()->getSprite());
+	structureIndicatorPharmacy= dynamic_cast<TextSprite*> (tmp);
+
 	objs.push_back(new ObjetoDeJogo("InventoryIndicator",TextSprite("B R O K E N"),18,110));
 	tmp = const_cast<SpriteBase*> (objs.back()->getSprite());
 	InventoryIndicator = dynamic_cast<TextSprite*> (tmp);
@@ -75,8 +79,10 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
 	int gameState = 0; //0 = esperando jogador //1 = processando entrada
 	int action = 0; //0 not assigned//1 move//2 menu de loot//3 loot house//4 loot market//5 loot fuel//6 loot base// 7 loot pharmacy
 
-	while (running)
-	{
+	while (running){
+		if (protagonist->getLife() == 0 || protagonist-> getHunger() == 0){
+				return Fase::GAME_OVER;
+			}
 		//lendo entrada
 
 		//getline(std::cin,ent);
@@ -90,34 +96,41 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
 					break;
 				case '1':
 					if (protagonist->getCanMove() == true){
-						std::cout << "Movendo para cima" << std::endl;
+						//std::cout << "Movendo para cima" << std::endl;
 						gameState = 1;
 						action = 1;
 						break;
 					}
-				case 'c':
+				case 'p':
 					if (protagonist->getHasHouses() == true){
-					std::cout << "Movendo para a esquerda" << std::endl;
+					//std::cout << "Movendo para a esquerda" << std::endl;
 					gameState = 1;
 					action = 3;
 					break;
 					}
 				case 'm':
 					if (protagonist->getHasMarket() == true){
-					std::cout << "Movendo para a esquerda" << std::endl;
+					//std::cout << "Movendo para a esquerda" << std::endl;
 					gameState = 1;
 					action = 4;
 					break;
 					}
 				case 'e':
 					if (protagonist->getHasDeposit() == true){
-					std::cout << "Movendo para a esquerda" << std::endl;
+					//std::cout << "Movendo para a esquerda" << std::endl;
 					gameState = 1;
 					action = 5;
 					break;
 					}
+				case 'f':
+					if (protagonist->getHasPharmacy() == true){
+					//std::cout << "Movendo para a esquerda" << std::endl;
+					gameState = 1;
+					action = 7;
+					break;
+					}
 				default:
-					std::cout << "Tecla pressionada: " << input << std::endl;
+					//std::cout << "Tecla pressionada: " << input << std::endl;
 					break;
 				}
 			}
@@ -178,6 +191,15 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
 			structureIndicatorBase->setText(oss.str());
 		}
 
+		if (protagonist->getHasPharmacy() == true){
+			oss << "Há uma farmacia aqui.";
+			structureIndicatorPharmacy->setText(oss.str());
+			oss.str(" ");
+		}else{
+			oss.str(" ");
+			structureIndicatorPharmacy->setText(oss.str());
+		}
+
 		for(int i = 0; i <= 9; i++){
 			oss << "| ";
 			if (protagonist->Inventory[i] == 1) {
@@ -223,6 +245,11 @@ unsigned FaseLevel1::run(SpriteBuffer &screen)
 				break;
 			case 5: // fuel
 				protagonist->loot(3);
+				gameState = 0;
+				action = 0;
+				break;
+			case 7: // pharmacy
+				protagonist->loot(4);
 				gameState = 0;
 				action = 0;
 				break;
