@@ -44,11 +44,11 @@ void FaseLevel1::init()
 	tmp = const_cast<SpriteBase*> (objs.back()->getSprite());
 	structureIndicatorBase = dynamic_cast<TextSprite*> (tmp);
 
-	objs.push_back(new ObjetoDeJogo("PharmaIndicator",TextSprite("B R O K E N"),28,165));
+	objs.push_back(new ObjetoDeJogo("PharmaIndicator",TextSprite("B R O K E N"),29,165));
 	tmp = const_cast<SpriteBase*> (objs.back()->getSprite());
 	structureIndicatorPharmacy= dynamic_cast<TextSprite*> (tmp);
 
-	objs.push_back(new ObjetoDeJogo("InventoryIndicator",TextSprite("B R O K E N"),18,110));
+	objs.push_back(new ObjetoDeJogo("InventoryIndicator",TextSprite("B R O K E N"),18,20));
 	tmp = const_cast<SpriteBase*> (objs.back()->getSprite());
 	InventoryIndicator = dynamic_cast<TextSprite*> (tmp);
 

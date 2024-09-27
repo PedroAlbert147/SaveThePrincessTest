@@ -46,7 +46,7 @@ public:
 		setFuel(getFuel() - getDistanceToNextStation());
 		setDistanceFromStorm(getDistanceFromStorm() + getDistanceToNextStation());
 		setDistanceToEnd(getDistanceToEnd() - getDistanceToNextStation());
-		setDistanceToNextStation(getRandomNumber (10 + (getDay() * 5), 50 + (getDay() * 5)));
+		setDistanceToNextStation(getRandomNumber ( 5 , (getDay() * 5)));
 		HasBase = randomChance(10);
 		HasPharmacy = randomChance(15);
 		HasFuelDeposit = randomChance(33);
@@ -156,12 +156,17 @@ public:
 	void setDay(int newDay){ 
 		day = newDay;
 		setHunger(getHunger() - 25);
-		setDistanceFromStorm(getDistanceFromStorm() - 50);
+		setDistanceFromStorm(getDistanceFromStorm() - 20);
 	}
 	int getDistanceToEnd() const { return distanceToEnd; }
 	void setDistanceToEnd(int newDistance){ distanceToEnd = newDistance;} 
 	int getDistanceToNextStation() const { return distanceToNextStation; }
-	void setDistanceToNextStation(int newDistance){ distanceToNextStation = newDistance;}
+	void setDistanceToNextStation(int newDistance){
+		if (newDistance > 33){
+			newDistance = 33;
+		}
+		distanceToNextStation = newDistance;
+	}
 	int getDistanceFromStorm() const { return distancefromStorm; }
 	void setDistanceFromStorm(int newDistance){ distancefromStorm = newDistance;}
 	bool getCanMove() const { return canMove; }
